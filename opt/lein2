@@ -2,9 +2,10 @@
 
 # This gets replaced by bin/compile for DRY purposes.
 export LEIN_VERSION="##LEIN_VERSION##"
+export CLOJURE_DIST_URL="##CLOJURE_DIST_URL##"
 
 LEIN_JAR=".lein/leiningen-$LEIN_VERSION-standalone.jar"
-LEIN_JAR_URL="https://heroku-buildpack-clojure.s3.amazonaws.com/leiningen-$LEIN_VERSION-standalone.jar"
+LEIN_JAR_URL="$CLOJURE_DIST_URL/leiningen-$LEIN_VERSION-standalone.jar"
 
 export LEIN_HOME=${LEIN_HOME:-".lein"}
 export JAVA_CMD=${JAVA_CMD:-"java"}

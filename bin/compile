@@ -4,13 +4,16 @@
 # fail fast
 set -e
 
+BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
+. $BIN_DIR/common
+
+source "${BIN_DIR}/../conf/${PAAS_VENDOR}-env.properties"
+
 # parse args
 export BUILD_DIR=$1
 export CACHE_DIR=$2
 
-# Load common JVM functionality from https://github.com/heroku/heroku-buildpack-jvm-common
-JVM_COMMON_BUILDPACK=https://heroku-jvm-common.s3.amazonaws.com/jvm-buildpack-common.tar.gz
-curl --silent --location $JVM_COMMON_BUILDPACK | tar -x bin/java -zO > /tmp/jvm-common
+curl --silent --location $JVM_BUILDPACK_COMMON_URL | tar -x bin/java -zO > /tmp/jvm-common
 source /tmp/jvm-common
 
 # JDK version
@@ -58,7 +61,7 @@ else
 fi
 
 # install leiningen jar
-LEIN_JAR_URL="https://heroku-buildpack-clojure.s3.amazonaws.com/leiningen-$LEIN_VERSION-standalone.jar"
+LEIN_JAR_URL="$CLOJURE_DIST_URL/leiningen-$LEIN_VERSION-standalone.jar"
 LEIN_JAR_CACHE_PATH="$CACHE_DIR/leiningen-$LEIN_VERSION-standalone.jar"
 LEIN_JAR_SLUG_PATH="$BUILD_DIR/.lein/leiningen-$LEIN_VERSION-standalone.jar"
 
@@ -80,7 +83,7 @@ cp "$LEIN_JAR_CACHE_PATH" "$LEIN_JAR_SLUG_PATH"
 
 # install rlwrap binary on lein 1.x
 if [ "$RLWRAP" = "yes" ]; then
-  RLWRAP_BIN_URL="https://s3.amazonaws.com/heroku-buildpack-clojure/rlwrap-0.3.7"
+  RLWRAP_BIN_URL="$CLOJURE_DIST_URL/rlwrap-0.3.7"
   RLWRAP_BIN_PATH=$BUILD_DIR"/.lein/bin/rlwrap"
   echo "       Downloading: rlwrap-0.3.7"
   mkdir -p $(dirname $RLWRAP_BIN_PATH)
@@ -94,10 +97,12 @@ echo "       Writing: lein script"
 mkdir -p $(dirname $LEIN_BIN_PATH)
 cp $LEIN_BIN_SOURCE $LEIN_BIN_PATH
 sed -i s/##LEIN_VERSION##/$LEIN_VERSION/ $LEIN_BIN_PATH
+sed -i s?##CLOJURE_DIST_URL##?$CLOJURE_DIST_URL? $LEIN_BIN_PATH
 
 # create user-level profiles
-LEIN_PROFILES_SOURCE="$(dirname $0)/../opt/profiles.clj"
-cp -n $LEIN_PROFILES_SOURCE "$BUILD_DIR/.lein/profiles.clj"
+PROFILES_CLJ_URL=$CLOJURE_DIST_URL/profiles.clj
+PROFILES_PATH="$BUILD_DIR/.lein/profiles.clj"
+curl --silent --show-error --location $PROFILES_CLJ_URL --fail -o $PROFILES_PATH || error "Failed to download $PROFILES_CLJ_URL"
 
 # unpack existing cache
 CACHE_STORE_DIR=$CACHE_DIR"/.m2"
