@@ -1,14 +1,16 @@
-# Heroku buildpack: Clojure
+Buildpack for Clojure
+=====================
 
-This is a Heroku buildpack for Clojure apps. It uses
-[Leiningen](http://leiningen.org).
-
-Note that you don't have to do anything special to use this buildpack
-with Clojure apps on Heroku; it will be used by default for all
-projects containing a project.clj file, though it may be an older
-revision than what you're currently looking at.
+This is a [buildpack](https://www.cloudcontrol.com/dev-center/Platform%20Documentation#buildpacks-and-the-procfile) for
+Clojure apps, powered by [Leiningen](http://leiningen.org).
 
 ## Usage
+This is our default buildpack for Clojure applications. In case you want to introduce some changes, fork our buildpack,
+apply changes and test it via [custom buildpack feature](https://www.cloudcontrol.com/dev-center/Guides/Third-Party%20Buildpacks/Third-Party%20Buildpacks):
+
+    $ cctrlapp APP_NAME create custom --buildpack https://github.com/cloudControl/buildpack-clojure.git
+
+The buildpack will use Leiningen to install your dependencies.
 
 Example usage for an app already stored in git:
 
@@ -20,31 +22,30 @@ Example usage for an app already stored in git:
         `-- sample
             `-- core.clj
 
-    $ heroku create
+    $ cctrlapp APP_NAME create java
 
-    $ git push heroku master
-    ...
-    -----> Heroku receiving push
-    -----> Fetching custom buildpack
-    -----> Clojure app detected
+    $ cctrlapp APP_NAME push
+    [...]
+    -----> Receiving push
+    -----> Installing OpenJDK 1.7...
     -----> Installing Leiningen
-           Downloading: leiningen-2.2.0-standalone.jar
+           Downloading: leiningen-1.7.1-standalone.jar
+           Downloading: rlwrap-0.3.7
            Writing: lein script
     -----> Building with Leiningen
-           Running: with-profile production compile :all
-           Downloading: org/clojure/clojure/1.2.1/clojure-1.2.1.pom from central
-           Downloading: org/clojure/clojure/1.2.1/clojure-1.2.1.jar from central
-           Copying 1 file to /tmp/build_2e5yol0778bcw/lib
-    -----> Discovering process types
-           Procfile declares types -> core
-    -----> Compiled slug size is 10.0MB
-    -----> Launching... done, v4
-           http://gentle-water-8841.herokuapp.com deployed to Heroku
+           Running: lein deps
+           [...]
+           Copying 20 files to /srv/tmp/builddir/lib
+    -----> Building image
+    -----> Uploading image (54M)
+    
+    To ssh://APP_NAME@cloudcontrolled.com/repository.git
+     * [new branch]      master -> master
 
 The buildpack will detect your app as Clojure if it has a
 `project.clj` file in the root. If you use the
 [clojure-maven-plugin](https://github.com/talios/clojure-maven-plugin),
-[the standard Java buildpack](http://github.com/heroku/heroku-buildpack-java)
+[the standard Java buildpack](https://github.com/cloudControl/buildpack-java)
 should work instead.
 
 ## Configuration
@@ -82,8 +83,7 @@ they can cause reloading issues:
   :profiles {:uberjar {:main myproject.web, :aot :all}}
 ```
 
-If you need Leiningen in a `heroku run` session, it will be downloaded
-on-demand.
+If you need Leiningen in a `cctrlapp run` session, it will be downloaded on-demand.
 
 Note that if you use Leiningen features which affect runtime like
 `:jvm-opts`, extraction of native dependencies, or `:java-agents`,
@@ -122,36 +122,8 @@ $ git add system.properties
 $ git commit -m "JDK 7"
 ```
 
-## Hacking
-
-To change this buildpack, fork it on GitHub. Push up changes to your
-fork, then create a test app with `--buildpack YOUR_GITHUB_URL` and
-push to it. If you already have an existing app you may use
-`heroku config:add BUILDPACK_URL=YOUR_GITHUB_URL` instead.
-
-For example, you could adapt it to generate a tarball at build time.
-
-Open `bin/compile` in your editor, and replace the block labeled
-"Calculate build command" with something like this:
-
-    echo "-----> Generating tar with Leiningen:"
-    echo "       Running: lein tar"
-    cd $BUILD_DIR
-    PATH=.lein/bin:/usr/local/bin:/usr/bin:/bin JAVA_OPTS="-Xmx500m -Duser.home=$BUILD_DIR" lein tar 2>&1 | sed -u 's/^/       /'
-    if [ "${PIPESTATUS[*]}" != "0 0" ]; then
-      echo " !     Failed to create tar with Leiningen"
-      exit 1
-    fi
-
-Commit and push the changes to your buildpack to your GitHub fork,
-then push your sample app to Heroku to test. The output should include:
-
-    -----> Generating tar with Leiningen:
-
-If it's something other users would find useful, pull requests are welcome.
-
 ## Troubleshooting
 
-To see what the buildpack has produced, do `heroku run bash` and you
+To see what the buildpack has produced, do `cctrlapp APP_NAME run bash` and you
 will be logged into an environment with your compiled app available.
 From there you can explore the filesystem and run `lein` commands.
