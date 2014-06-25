@@ -17,28 +17,32 @@ Example usage for an app already stored in git:
     $ tree
     |-- Procfile
     |-- project.clj
-    |-- README
+    |-- README.md
+    |-- resources
+        `-- public
+            `__ ...
     `-- src
         `-- sample
-            `-- core.clj
+            `-- app.clj
 
     $ cctrlapp APP_NAME create java
 
     $ cctrlapp APP_NAME push
     [...]
     -----> Receiving push
-    -----> Installing OpenJDK 1.7...
+    -----> Installing OpenJDK 1.7...-----> Installing OpenJDK 1.7(openjdk7.b32.tar.gz)... done
+    done
     -----> Installing Leiningen
-           Downloading: leiningen-1.7.1-standalone.jar
-           Downloading: rlwrap-0.3.7
+           Downloading: leiningen-2.4.2-standalone.jar
            Writing: lein script
     -----> Building with Leiningen
-           Running: lein deps
+           Running: lein with-profile production compile :all
+           (Retrieving org/clojure/clojure/1.6.0/clojure-1.6.0.pom from central)
            [...]
-           Copying 20 files to /srv/tmp/builddir/lib
+           Compiling app
     -----> Building image
-    -----> Uploading image (54M)
-    
+    -----> Uploading image (59M)
+
     To ssh://APP_NAME@cloudcontrolled.com/repository.git
      * [new branch]      master -> master
 
