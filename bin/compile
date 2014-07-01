@@ -41,7 +41,7 @@ export PATH="$HOME/.jdk/bin:$PATH"
 
 # Determine Leiningen version
 if [ "$(grep ":min-lein-version[[:space:]]\+\"2" $BUILD_DIR/project.clj)" != "" ]; then
-  LEIN_VERSION="2.2.0"
+  LEIN_VERSION="2.4.2"
   LEIN_BIN_SOURCE="$(dirname $0)/../opt/lein2"
   if [ "$(grep :uberjar-name $BUILD_DIR/project.clj)" != "" ]; then
       LEIN_BUILD_TASK="${LEIN_BUILD_TASK:-uberjar}"
@@ -57,7 +57,8 @@ else
     export LEIN_NO_DEV=y
   fi
   RLWRAP=yes
-  echo "Warning: no :min-lein-version found in project.clj; using $LEIN_VERSION."
+  echo "       WARNING: no :min-lein-version found in project.clj; using $LEIN_VERSION."
+  echo "       You probably don't want this!"
 fi
 
 # install leiningen jar
@@ -129,7 +130,8 @@ fi
 echo "       Running: $BUILD_COMMAND"
 
 cd $BUILD_DIR
-PATH=.lein/bin:$PATH LEIN_JVM_OPTS="-Xmx500m -Duser.home=$BUILD_DIR" \
+PATH=.lein/bin:$PATH JVM_OPTS="-Xmx600m" \
+  LEIN_JVM_OPTS="-Xmx400m -Duser.home=$BUILD_DIR" \
   $BUILD_COMMAND 2>&1 | sed -u 's/^/       /'
 if [ "${PIPESTATUS[*]}" != "0 0" ]; then
   echo " !     Failed to build."
@@ -142,12 +144,17 @@ mkdir -p $(dirname $PROFILE_PATH)
 
 echo "export JVM_OPTS=\"\${JVM_OPTS:--Xmx400m -Dfile.encoding=UTF-8}\"" >> $PROFILE_PATH
 echo "export LEIN_NO_DEV=\"\${LEIN_NO_DEV:-yes}\"" >> $PROFILE_PATH
-echo "export PATH=\"$HOME/.jdk/bin:$PATH:\$HOME/.lein/bin\"" >> $PROFILE_PATH
+echo "export PATH=\"\$HOME/.jdk/bin:$PATH:\$HOME/.lein/bin\"" >> $PROFILE_PATH
 
 # default Procfile
 if [ ! -r $BUILD_DIR/Procfile ]; then
-  echo "       No Procfile; using \"web: lein with-profile production trampoline run\"."
-  echo "web: lein with-profile production trampoline run" > $BUILD_DIR/Procfile
+  if [ "$LEIN_VERSION" = "1.7.1" ]; then
+    echo "       No Procfile; using \"web: lein trampoline run\"."
+    echo "web: lein trampoline run" > $BUILD_DIR/Procfile
+  else
+    echo "       No Procfile; using \"web: lein with-profile production trampoline run\"."
+    echo "web: lein with-profile production trampoline run" > $BUILD_DIR/Procfile
+  fi
 fi
 
 # repack cache with new assets
