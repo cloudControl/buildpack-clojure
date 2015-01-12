@@ -1,5 +1,10 @@
 # History of Changes
 
+## Master
+
+* Use JVM common package as gitsubmodule
+* Upgrade to Leiningen 2.5.1
+
 ## Version 63
 
 * Upgrade to Leiningen 2.5.0
