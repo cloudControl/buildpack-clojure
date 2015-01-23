@@ -10,3 +10,5 @@ script: /tmp/testrunner/bin/run -c .
 env:
   global:
     - SHUNIT_HOME="/tmp/shunit2-2.1.6"
+    - DOMAIN="devcctrl.com"
+    - PAAS_VENDOR="cloudControl"
