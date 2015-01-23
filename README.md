@@ -1,5 +1,4 @@
-Buildpack for Clojure
-=====================
+# Buildpack for Clojure [![Build Status](https://travis-ci.org/cloudControl/buildpack-clojure.svg?branch=master)](https://travis-ci.org/cloudControl/buildpack-clojure)
 
 This is a [buildpack](https://www.cloudcontrol.com/dev-center/Platform%20Documentation#buildpacks-and-the-procfile) for
 Clojure apps, powered by [Leiningen](http://leiningen.org).
