@@ -55,7 +55,7 @@ testCompileJdk6() {
   _createSysProps "1.6"
   compile
   assertCapturedSuccess
-  assertCaptured "Installing OpenJDK 1.6...done"
+  assertCaptured "Installing OpenJDK 1.6..."
   assertCaptured "Downloading: leiningen-1.7.1-standalone.jar"
 }
 
@@ -64,15 +64,16 @@ testCompileJdk7() {
   _createSysProps "1.7"
   compile
   assertCapturedSuccess
-  assertCaptured "Installing OpenJDK 1.7...done"
+  assertCaptured "Installing OpenJDK 1.7..."
   assertCaptured "Downloading: leiningen-1.7.1-standalone.jar"
 }
 
 testCompileJdk8() {
   _createNoLeinProject
+  _createSysProps "1.8"
   compile
   assertCapturedSuccess
-  assertCaptured "Installing OpenJDK 1.8...done"
+  assertCaptured "Installing OpenJDK 1.8..."
   assertCaptured "WARNING: no :min-lein-version found in project.clj; using 1.7.1."
   assertCaptured "To use Leiningen 2.x, add this to project.clj: :min-lein-version \"2.0.0\""
   assertCaptured "Downloading: leiningen-1.7.1-standalone.jar"
