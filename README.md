@@ -29,7 +29,7 @@ Example usage for an app already stored in git:
     $ cctrlapp APP_NAME push
     [...]
     -----> Receiving push
-    -----> Installing OpenJDK 1.7(openjdk7.b32.tar.gz)... done
+    -----> Installing OpenJDK 1.8(jdk-1.8.0-openjdk-x86_64-1.8.0_u60-b05.tar.gz)... done
     -----> Installing Leiningen
            Downloading: leiningen-2.5.1-standalone.jar
            Writing: lein script
@@ -115,13 +115,13 @@ will be run instead of `compile` or `uberjar` after setting up Leiningen.
 
 ## JDK Version
 
-By default you will get OpenJDK 1.7. To use a different version, you
+By default you will get OpenJDK 1.8. To use a different version, you
 can commit a `system.properties` file to your app.
 
 ```
-$ echo "java.runtime.version=1.8" > system.properties
+$ echo "java.runtime.version=1.7" > system.properties
 $ git add system.properties
-$ git commit -m "JDK 8"
+$ git commit -m "JDK 7"
 ```
 
 ## Troubleshooting
