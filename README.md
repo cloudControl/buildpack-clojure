@@ -3,7 +3,21 @@
 This is a [buildpack](https://www.cloudcontrol.com/dev-center/Platform%20Documentation#buildpacks-and-the-procfile) for
 Clojure apps, powered by [Leiningen](http://leiningen.org).
 
+## How it works
+
+The buildpack will detect your app as Clojure if it has a
+`project.clj` file in the root. If you use the
+[clojure-maven-plugin](https://github.com/talios/clojure-maven-plugin),
+[the standard Java buildpack](https://github.com/cloudControl/buildpack-java)
+should work instead.
+
+## Getting started
+
+You can visit our guide on [Deploying a Clojure application](https://www.cloudcontrol.com/dev-center/guides/java/clojure-helloworld)
+on cloudControl.
+
 ## Usage
+
 This is our default buildpack for Clojure applications. In case you want to introduce some changes, fork our buildpack,
 apply changes and test it via [custom buildpack feature](https://www.cloudcontrol.com/dev-center/Guides/Third-Party%20Buildpacks/Third-Party%20Buildpacks):
 
@@ -43,12 +57,6 @@ Example usage for an app already stored in git:
 
     To ssh://APP_NAME@cloudcontrolled.com/repository.git
      * [new branch]      master -> master
-
-The buildpack will detect your app as Clojure if it has a
-`project.clj` file in the root. If you use the
-[clojure-maven-plugin](https://github.com/talios/clojure-maven-plugin),
-[the standard Java buildpack](https://github.com/cloudControl/buildpack-java)
-should work instead.
 
 ## Configuration
 
