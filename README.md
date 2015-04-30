@@ -3,11 +3,25 @@
 This is a [buildpack](https://www.cloudcontrol.com/dev-center/Platform%20Documentation#buildpacks-and-the-procfile) for
 Clojure apps, powered by [Leiningen](http://leiningen.org).
 
+## How it works
+
+The buildpack will detect your app as Clojure if it has a
+`project.clj` file in the root. If you use the
+[clojure-maven-plugin](https://github.com/talios/clojure-maven-plugin),
+[the standard Java buildpack](https://github.com/cloudControl/buildpack-java)
+should work instead.
+
+## Getting started
+
+You can visit our guide on [Deploying a Clojure application](https://www.cloudcontrol.com/dev-center/guides/java/clojure-helloworld)
+on cloudControl.
+
 ## Usage
+
 This is our default buildpack for Clojure applications. In case you want to introduce some changes, fork our buildpack,
 apply changes and test it via [custom buildpack feature](https://www.cloudcontrol.com/dev-center/Guides/Third-Party%20Buildpacks/Third-Party%20Buildpacks):
 
-    $ cctrlapp APP_NAME create custom --buildpack https://github.com/cloudControl/buildpack-clojure.git
+    $ cctrlapp APP_NAME create custom --buildpack https://github.com/USER_NAME/buildpack-clojure.git
 
 The buildpack will use Leiningen to install your dependencies.
 
@@ -29,10 +43,9 @@ Example usage for an app already stored in git:
     $ cctrlapp APP_NAME push
     [...]
     -----> Receiving push
-    -----> Installing OpenJDK 1.7...-----> Installing OpenJDK 1.7(openjdk7.b32.tar.gz)... done
-    done
+    -----> Installing OpenJDK 1.8(jdk-1.8.0-openjdk-x86_64-1.8.0_u60-b05.tar.gz)... done
     -----> Installing Leiningen
-           Downloading: leiningen-2.4.2-standalone.jar
+           Downloading: leiningen-2.5.1-standalone.jar
            Writing: lein script
     -----> Building with Leiningen
            Running: lein with-profile production compile :all
@@ -44,12 +57,6 @@ Example usage for an app already stored in git:
 
     To ssh://APP_NAME@cloudcontrolled.com/repository.git
      * [new branch]      master -> master
-
-The buildpack will detect your app as Clojure if it has a
-`project.clj` file in the root. If you use the
-[clojure-maven-plugin](https://github.com/talios/clojure-maven-plugin),
-[the standard Java buildpack](https://github.com/cloudControl/buildpack-java)
-should work instead.
 
 ## Configuration
 
@@ -116,7 +123,7 @@ will be run instead of `compile` or `uberjar` after setting up Leiningen.
 
 ## JDK Version
 
-By default you will get OpenJDK 1.6. To use a different version, you
+By default you will get OpenJDK 1.8. To use a different version, you
 can commit a `system.properties` file to your app.
 
 ```
